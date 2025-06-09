@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Culinary Haven - Restaurant</title>
+    <!-- Tailwind CSS CDN for rapid styling and responsiveness -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Custom CSS to ensure Inter for body and Playfair Display for headings */
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8fafc; /* Light background */
+        color: #334155; /* Darker text color */
+      }
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: "Playfair Display", serif;
+      }
+      /* Smooth scroll for navigation */
+      html {
+        scroll-behavior: smooth;
+      }
+      /* Custom styles for section padding on small screens */
+      section {
+        padding-top: 4rem; /* Equivalent to pt-16 */
+        padding-bottom: 4rem; /* Equivalent to pb-16 */
+      }
+      @media (min-width: 768px) {
+        /* md breakpoint */
+        section {
+          padding-top: 6rem; /* Equivalent to md:pt-24 */
+          padding-bottom: 6rem; /* Equivalent to md:pb-24 */
+        }
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <!-- Header Section: Navigation Bar -->
+    <header class="bg-white shadow-sm fixed w-full z-10 top-0">
+      <nav
+        class="container mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <!-- Logo/Restaurant Name -->
+        <a
+          href="#"
+          class="text-3xl font-bold text-gray-900 rounded-lg hover:text-red-700 transition-colors duration-300"
+        >
+          The Culinary Haven
+        </a>
+        <!-- Navigation Links for Desktop -->
+        <ul class="hidden md:flex space-x-8">
+          <li>
+            <a
+              href="#about"
+              class="text-gray-700 hover:text-red-700 transition-colors duration-300 font-medium text-lg px-3 py-2 rounded-lg"
+              >About Us</a
+            >
+          </li>
+          <li>
+            <a
+              href="#menu"
+              class="text-gray-700 hover:text-red-700 transition-colors duration-300 font-medium text-lg px-3 py-2 rounded-lg"
+              >Menu</a
+            >
+          </li>
+          <li>
+            <a
+              href="#contact"
+              class="text-gray-700 hover:text-red-700 transition-colors duration-300 font-medium text-lg px-3 py-2 rounded-lg"
+              >Contact</a
+            >
+          </li>
+        </ul>
+
+        <!-- Mobile Menu Button (Hamburger Icon) -->
+        <div class="md:hidden">
+          <button
+            id="mobile-menu-button"
+            class="text-gray-700 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 rounded-lg p-2 transition-colors duration-300"
+          >
+            <svg
+              class="w-8 h-8"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </nav>
+
+      <!-- Mobile Menu (Hidden by default, shown with JS) -->
+      <div
+        id="mobile-menu"
+        class="hidden md:hidden bg-white shadow-md py-3 border-t border-gray-100"
+      >
+        <ul class="flex flex-col items-center space-y-4">
+          <li>
+            <a
+              href="#about"
+              class="block text-gray-800 hover:bg-gray-100 w-full text-center py-3 text-lg rounded-lg"
+              onclick="closeMobileMenu()"
+              >About Us</a
+            >
+          </li>
+          <li>
+            <a
+              href="#menu"
+              class="block text-gray-800 hover:bg-gray-100 w-full text-center py-3 text-lg rounded-lg"
+              onclick="closeMobileMenu()"
+              >Menu</a
+            >
+          </li>
+          <li>
+            <a
+              href="#contact"
+              class="block text-gray-800 hover:bg-gray-100 w-full text-center py-3 text-lg rounded-lg"
+              onclick="closeMobileMenu()"
+              >Contact</a
+            >
+          </li>
+        </ul>
+      </div>
+    </header>
+
+    <!-- Hero Section: Welcome -->
+    <section
+      class="min-h-screen flex items-center justify-center text-center bg-cover bg-center text-white relative pt-20 pb-16 md:pt-24 md:pb-24"
+      style="
+        background-image: url('https://placehold.co/1920x1080/4a5568/ffffff?text=Delicious+Food+Background');
+      "
+    >
+      <div class="absolute inset-0 bg-black opacity-60"></div>
+      <!-- Overlay for better text readability -->
+      <div class="container mx-auto px-4 py-16 relative z-10">
+        <h1
+          class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight drop-shadow-lg"
+        >
+          Welcome to The Culinary Haven
+        </h1>
+        <p class="text-xl md:text-3xl font-light mb-10 drop-shadow-md">
+          Experience exceptional dining with fresh ingredients and exquisite
+          flavors.
+        </p>
+        <a
+          href="#menu"
+          class="inline-block bg-red-600 text-white hover:bg-red-700 px-10 py-5 rounded-full text-xl font-semibold shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white"
+        >
+          View Our Menu
+        </a>
+      </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about" class="bg-gray-50 py-16 md:py-24">
+      <div
+        class="container mx-auto px-4 flex flex-col md:flex-row items-center justify-center md:space-x-16"
+      >
+        <!-- Image -->
+        <div class="mb-8 md:mb-0 md:w-1/2 flex justify-center">
+          <img
+            src="https://placehold.co/600x400/b7c9e0/334155?text=Restaurant+Interior"
+            alt="Restaurant Interior"
+            class="rounded-xl shadow-xl w-full max-w-lg object-cover transform hover:scale-105 transition-transform duration-300 border-4 border-white"
+          />
+        </div>
+        <!-- Text Content -->
+        <div class="md:w-1/2 text-center md:text-left">
+          <h2
+            class="text-4xl font-bold text-gray-800 mb-6 border-b-4 border-red-500 pb-3 inline-block"
+          >
+            About Our Haven
+          </h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-4">
+            At The Culinary Haven, we believe that dining is an art. Our journey
+            began with a simple dream: to create a place where every dish tells
+            a story, crafted with passion and the finest locally sourced
+            ingredients.
+          </p>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            From our cozy ambiance to our attentive service, every detail is
+            designed to ensure an unforgettable culinary experience. Join us for
+            a delightful meal that will tantalize your taste buds and warm your
+            soul.
+          </p>
+          <h3 class="text-2xl font-semibold text-gray-800 mb-4">
+            Our Commitment
+          </h3>
+          <ul class="list-disc list-inside text-gray-700 text-lg space-y-2">
+            <li>Fresh, seasonal, and locally sourced ingredients.</li>
+            <li>Innovative dishes with traditional techniques.</li>
+            <li>Exceptional service in a welcoming atmosphere.</li>
+            <li>A truly memorable dining experience.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="bg-white py-16 md:py-24">
+      <div class="container mx-auto px-4">
+        <h2
+          class="text-4xl font-bold text-gray-800 text-center mb-12 border-b-4 border-red-500 pb-3 inline-block mx-auto"
+        >
+          Our Delicious Menu
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          <!-- Menu Item 1 -->
+          <div
+            class="bg-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden transform hover:scale-105 cursor-pointer"
+          >
+            <img
+              src="https://placehold.co/600x400/ef4444/ffffff?text=Spaghetti+Bolognese"
+              alt="Spaghetti Bolognese"
+              class="w-full h-56 object-cover"
+            />
+            <div class="p-6">
+              <h3 class="text-2xl font-semibold text-gray-800 mb-2">
+                Spaghetti Bolognese
+              </h3>
+              <p class="text-gray-600 mb-4 text-sm">
+                Classic Italian pasta with a rich, slow-cooked meat sauce and
+                fresh Parmesan.
+              </p>
+              <p class="text-xl font-bold text-red-600">$18.99</p>
+            </div>
+          </div>
+
+          <!-- Menu Item 2 -->
+          <div
+            class="bg-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden transform hover:scale-105 cursor-pointer"
+          >
+            <img
+              src="https://placehold.co/600x400/22c55e/ffffff?text=Grilled+Salmon"
+              alt="Grilled Salmon"
+              class="w-full h-56 object-cover"
+            />
+            <div class="p-6">
+              <h3 class="text-2xl font-semibold text-gray-800 mb-2">
+                Grilled Salmon
+              </h3>
+              <p class="text-gray-600 mb-4 text-sm">
+                Perfectly grilled salmon fillet served with asparagus and
+                lemon-dill sauce.
+              </p>
+              <p class="text-xl font-bold text-red-600">$24.50</p>
+            </div>
+          </div>
+
+          <!-- Menu Item 3 -->
+          <div
+            class="bg-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden transform hover:scale-105 cursor-pointer"
+          >
+            <img
+              src="https://placehold.co/600x400/f59e0b/ffffff?text=Caprese+Salad"
+              alt="Caprese Salad"
+              class="w-full h-56 object-cover"
+            />
+            <div class="p-6">
+              <h3 class="text-2xl font-semibold text-gray-800 mb-2">
+                Caprese Salad
+              </h3>
+              <p class="text-gray-600 mb-4 text-sm">
+                Fresh mozzarella, ripe tomatoes, basil, and a balsamic glaze.
+              </p>
+              <p class="text-xl font-bold text-red-600">$12.00</p>
+            </div>
+          </div>
+
+          <!-- Menu Item 4 -->
+          <div
+            class="bg-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden transform hover:scale-105 cursor-pointer"
+          >
+            <img
+              src="https://placehold.co/600x400/3b82f6/ffffff?text=Chocolate+Lava+Cake"
+              alt="Chocolate Lava Cake"
+              class="w-full h-56 object-cover"
+            />
+            <div class="p-6">
+              <h3 class="text-2xl font-semibold text-gray-800 mb-2">
+                Chocolate Lava Cake
+              </h3>
+              <p class="text-gray-600 mb-4 text-sm">
+                Warm chocolate cake with a molten center, served with vanilla
+                bean ice cream.
+              </p>
+              <p class="text-xl font-bold text-red-600">$9.50</p>
+            </div>
+          </div>
+
+          <!-- Menu Item 5 -->
+          <div
+            class="bg-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden transform hover:scale-105 cursor-pointer"
+          >
+            <img
+              src="https://placehold.co/600x400/6b7280/ffffff?text=Risotto+Funghi"
+              alt="Risotto Funghi"
+              class="w-full h-56 object-cover"
+            />
+            <div class="p-6">
+              <h3 class="text-2xl font-semibold text-gray-800 mb-2">
+                Risotto Funghi
+              </h3>
+              <p class="text-gray-600 mb-4 text-sm">
+                Creamy Arborio rice with assorted wild mushrooms and truffle
+                oil.
+              </p>
+              <p class="text-xl font-bold text-red-600">$21.00</p>
+            </div>
+          </div>
+
+          <!-- Menu Item 6 -->
+          <div
+            class="bg-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden transform hover:scale-105 cursor-pointer"
+          >
+            <img
+              src="https://placehold.co/600x400/9ca3af/ffffff?text=Chicken+Caesar+Salad"
+              alt="Chicken Caesar Salad"
+              class="w-full h-56 object-cover"
+            />
+            <div class="p-6">
+              <h3 class="text-2xl font-semibold text-gray-800 mb-2">
+                Chicken Caesar Salad
+              </h3>
+              <p class="text-gray-600 mb-4 text-sm">
+                Crisp romaine, grilled chicken, croutons, Parmesan, and Caesar
+                dressing.
+              </p>
+              <p class="text-xl font-bold text-red-600">$16.50</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="bg-gray-50 py-16 md:py-24">
+      <div class="container mx-auto px-4">
+        <h2
+          class="text-4xl font-bold text-gray-800 text-center mb-12 border-b-4 border-red-500 pb-3 inline-block mx-auto"
+        >
+          Contact Us
+        </h2>
+
+        <div class="flex flex-col md:flex-row gap-12 items-start">
+          <!-- Contact Form -->
+          <div class="md:w-1/2 bg-white p-8 rounded-xl shadow-lg">
+            <h3 class="text-3xl font-semibold text-gray-800 mb-6">
+              Send a Message
+            </h3>
+            <form class="space-y-6">
+              <div>
+                <label
+                  for="name"
+                  class="block text-gray-700 text-sm font-semibold mb-2"
+                  >Name</label
+                >
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition-all duration-200"
+                />
+              </div>
+              <div>
+                <label
+                  for="email"
+                  class="block text-gray-700 text-sm font-semibold mb-2"
+                  >Email</label
+                >
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition-all duration-200"
+                />
+              </div>
+              <div>
+                <label
+                  for="message"
+                  class="block text-gray-700 text-sm font-semibold mb-2"
+                  >Message</label
+                >
+                <textarea
+                  id="message"
+                  name="message"
+                  rows="5"
+                  class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition-all duration-200"
+                ></textarea>
+              </div>
+              <button
+                type="submit"
+                class="bg-red-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-red-700 transition-colors duration-300 shadow-md transform hover:scale-105 w-full"
+              >
+                Send Message
+              </button>
+            </form>
+          </div>
+
+          <!-- Map and Info -->
+          <div class="md:w-1/2 flex flex-col space-y-8">
+            <!-- Map Integration (Placeholder) -->
+            <div
+              class="bg-white p-6 rounded-xl shadow-lg h-80 flex items-center justify-center text-gray-500 text-center text-lg"
+            >
+              <!-- Replace with actual Google Maps iframe or image -->
+              <p>Map Placeholder - Will integrate Google Maps API here</p>
+              <img
+                src="https://placehold.co/600x400/e0f2fe/334155?text=Map+Location"
+                alt="Restaurant Location Map"
+                class="w-full h-full object-cover rounded-lg"
+              />
+            </div>
+
+            <!-- Other Contact Info -->
+            <div class="bg-white p-6 rounded-xl shadow-lg space-y-4">
+              <h3 class="text-3xl font-semibold text-gray-800 mb-4">Find Us</h3>
+              <p class="text-lg text-gray-700 flex items-center space-x-3">
+                <svg
+                  class="w-6 h-6 text-red-600"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span>123 Culinary Street, Flavorville, CA 90210</span>
+              </p>
+              <p class="text-lg text-gray-700 flex items-center space-x-3">
+                <svg
+                  class="w-6 h-6 text-red-600"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.774a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"
+                  ></path>
+                </svg>
+                <span>(555) 123-4567</span>
+              </p>
+              <p class="text-lg text-gray-700 flex items-center space-x-3">
+                <svg
+                  class="w-6 h-6 text-red-600"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l3 3a1 1 0 001.414-1.414L11 9.586V6z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span>Mon - Sat: 11:00 AM - 10:00 PM</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="bg-gray-900 text-white py-8 text-center">
+      <div class="container mx-auto px-4">
+        <p>&copy; 2025 The Culinary Haven. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <!-- JavaScript for Mobile Menu Toggle -->
+    <script>
+      const mobileMenuButton = document.getElementById("mobile-menu-button");
+      const mobileMenu = document.getElementById("mobile-menu");
+
+      // Function to toggle mobile menu visibility
+      mobileMenuButton.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
+      });
+
+      // Function to close mobile menu after clicking a link
+      function closeMobileMenu() {
+        mobileMenu.classList.add("hidden");
+      }
+    </script>
+  </body>
+</html>

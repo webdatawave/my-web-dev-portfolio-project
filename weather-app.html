@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Weather App</title>
+    <!-- Tailwind CSS CDN for styling and responsiveness -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Custom CSS to ensure Inter font is applied and provide fallbacks */
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #e2e8f0; /* Light blue-gray background */
+        color: #1a202c; /* Dark text */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 1rem;
+        box-sizing: border-box;
+      }
+      .weather-container {
+        background-color: #ffffff;
+        border-radius: 1.5rem; /* Large rounded corners */
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 8px 10px -6px rgba(0, 0, 0, 0.05); /* Larger shadow */
+        width: 100%;
+        max-width: 32rem; /* Increased max width for more content */
+        padding: 2.5rem; /* Increased padding */
+        text-align: center;
+      }
+      .weather-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 1.5rem;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid #e2e8f0; /* Subtle separator */
+        padding-bottom: 1.5rem;
+      }
+      .weather-icon {
+        width: 6rem; /* Large icon size */
+        height: 6rem;
+        margin-bottom: 0.5rem;
+      }
+      .temp-display {
+        font-size: 4.5rem; /* Extra large temperature */
+        font-weight: 700;
+        color: #3b82f6; /* Primary blue for temperature */
+        line-height: 1;
+      }
+      .city-name {
+        font-size: 2.25rem; /* text-4xl */
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #1a202c;
+      }
+      .description-text {
+        font-size: 1.25rem; /* text-xl */
+        color: #4a5568;
+        margin-top: 0.5rem;
+      }
+      .forecast-grid {
+        display: grid;
+        grid-template-columns: repeat(
+          auto-fit,
+          minmax(80px, 1fr)
+        ); /* Responsive grid for forecast */
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+      .forecast-item {
+        background-color: #f8fafc;
+        border-radius: 0.75rem;
+        padding: 0.75rem;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+          0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 0.875rem; /* text-sm */
+        color: #4a5568;
+      }
+      .forecast-item .temp {
+        font-weight: 600;
+        color: #1a202c;
+        margin-top: 0.25rem;
+      }
+      .forecast-item .icon {
+        width: 2.5rem;
+        height: 2.5rem;
+      }
+      .error-message {
+        color: #ef4444; /* Red for errors */
+        margin-top: 1rem;
+        font-weight: 500;
+      }
+      .loading-spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3b82f6;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 1rem auto;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <div class="weather-container">
+      <h1 class="text-3xl font-bold mb-6 text-gray-900">Weather Forecast</h1>
+
+      <!-- City Search Input -->
+      <div class="flex flex-col sm:flex-row gap-3 mb-6">
+        <input
+          type="text"
+          id="city-input"
+          placeholder="Enter city name..."
+          class="flex-grow p-3 border-2 border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-sm text-lg"
+        />
+        <button
+          id="search-button"
+          class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-300 shadow-md transform hover:scale-105 text-lg"
+        >
+          Get Weather
+        </button>
+      </div>
+
+      <!-- Loading Indicator -->
+      <div id="loading-indicator" class="hidden loading-spinner"></div>
+
+      <!-- Error Message Display -->
+      <p id="error-display" class="error-message hidden"></p>
+
+      <!-- Current Weather Display -->
+      <div id="current-weather" class="weather-info hidden">
+        <h2 class="city-name" id="display-city"></h2>
+        <img id="weather-icon" src="" alt="Weather icon" class="weather-icon" />
+        <p class="temp-display" id="display-temp"></p>
+        <p class="description-text" id="display-description"></p>
+      </div>
+
+      <!-- Forecast Display -->
+      <div id="forecast" class="hidden">
+        <h3 class="text-2xl font-semibold mb-4 text-gray-800">
+          5-Day Forecast
+        </h3>
+        <div class="forecast-grid" id="forecast-items-container">
+          <!-- Forecast items will be dynamically added here -->
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // --- API Configuration ---
+      // IMPORTANT: Replace 'YOUR_API_KEY' with your actual API key from a weather service.
+      // For example, you can get a free API key from OpenWeatherMap (https://openweathermap.org/api)
+      // This example assumes OpenWeatherMap's One Call API or similar structure.
+      const API_KEY = ""; // Leave this empty for the Canvas environment to provide at runtime
+      const BASE_WEATHER_URL =
+        "https://api.openweathermap.org/data/2.5/weather";
+      const BASE_FORECAST_URL =
+        "https://api.openweathermap.org/data/2.5/forecast";
+
+      // --- DOM Elements ---
+      const cityInput = document.getElementById("city-input");
+      const searchButton = document.getElementById("search-button");
+      const loadingIndicator = document.getElementById("loading-indicator");
+      const errorDisplay = document.getElementById("error-display");
+      const currentWeatherSection = document.getElementById("current-weather");
+      const displayCity = document.getElementById("display-city");
+      const weatherIcon = document.getElementById("weather-icon");
+      const displayTemp = document.getElementById("display-temp");
+      const displayDescription = document.getElementById("display-description");
+      const forecastSection = document.getElementById("forecast");
+      const forecastItemsContainer = document.getElementById(
+        "forecast-items-container"
+      );
+
+      // --- Event Listeners ---
+      searchButton.addEventListener("click", fetchWeatherData);
+      cityInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+          fetchWeatherData();
+        }
+      });
+
+      // --- Helper Functions ---
+      /**
+       * Shows a loading indicator and hides weather/error displays.
+       */
+      function showLoading() {
+        loadingIndicator.classList.remove("hidden");
+        currentWeatherSection.classList.add("hidden");
+        forecastSection.classList.add("hidden");
+        errorDisplay.classList.add("hidden");
+        errorDisplay.textContent = "";
+      }
+
+      /**
+       * Hides the loading indicator.
+       */
+      function hideLoading() {
+        loadingIndicator.classList.add("hidden");
+      }
+
+      /**
+       * Displays an error message and hides weather/loading displays.
+       * @param {string} message - The error message to display.
+       */
+      function displayError(message) {
+        errorDisplay.textContent = message;
+        errorDisplay.classList.remove("hidden");
+        currentWeatherSection.classList.add("hidden");
+        forecastSection.classList.add("hidden");
+        hideLoading();
+      }
+
+      /**
+       * Converts temperature from Kelvin to Celsius.
+       * @param {number} kelvin - Temperature in Kelvin.
+       * @returns {number} Temperature in Celsius.
+       */
+      function kelvinToCelsius(kelvin) {
+        return (kelvin - 273.15).toFixed(1);
+      }
+
+      /**
+       * Formats a Unix timestamp into a readable time (e.g., "1 PM").
+       * @param {number} dt - Unix timestamp.
+       * @returns {string} Formatted time string.
+       */
+      function formatTime(dt) {
+        const date = new Date(dt * 1000); // Convert seconds to milliseconds
+        return date.toLocaleTimeString("en-US", {
+          hour: "numeric",
+          hour12: true,
+        });
+      }
+
+      /**
+       * Formats a Unix timestamp into a readable day (e.g., "Mon").
+       * @param {number} dt - Unix timestamp.
+       * @returns {string} Formatted day string.
+       */
+      function formatDay(dt) {
+        const date = new Date(dt * 1000); // Convert seconds to milliseconds
+        return date.toLocaleDateString("en-US", { weekday: "short" });
+      }
+
+      // --- Main Weather Fetching Function ---
+      /**
+       * Fetches weather data for the entered city from the API.
+       */
+      async function fetchWeatherData() {
+        const cityName = cityInput.value.trim();
+        if (!cityName) {
+          displayError("Please enter a city name.");
+          return;
+        }
+
+        if (!API_KEY) {
+          displayError(
+            "API Key is missing. Please set your API_KEY in the script."
+          );
+          return;
+        }
+
+        showLoading();
+
+        try {
+          // Fetch current weather
+          const weatherResponse = await fetch(
+            `${BASE_WEATHER_URL}?q=${cityName}&appid=${API_KEY}`
+          );
+          const weatherData = await weatherResponse.json();
+
+          if (!weatherResponse.ok) {
+            displayError(`Error: ${weatherData.message || "City not found"}`);
+            return;
+          }
+
+          // Fetch 5-day forecast
+          const forecastResponse = await fetch(
+            `${BASE_FORECAST_URL}?q=${cityName}&appid=${API_KEY}`
+          );
+          const forecastData = await forecastResponse.json();
+
+          if (!forecastResponse.ok) {
+            displayError(
+              `Error fetching forecast: ${
+                forecastData.message || "Could not retrieve forecast"
+              }`
+            );
+            return;
+          }
+
+          displayWeather(weatherData);
+          displayForecast(forecastData);
+        } catch (error) {
+          console.error("Failed to fetch weather data:", error);
+          displayError(
+            "Failed to fetch weather data. Please check your internet connection or try again later."
+          );
+        } finally {
+          hideLoading();
+        }
+      }
+
+      /**
+       * Renders the current weather data on the UI.
+       * @param {object} data - Current weather data from the API.
+       */
+      function displayWeather(data) {
+        displayCity.textContent = data.name;
+        weatherIcon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+        weatherIcon.alt = data.weather[0].description;
+        displayTemp.textContent = `${kelvinToCelsius(data.main.temp)}°C`;
+        displayDescription.textContent =
+          data.weather[0].description.charAt(0).toUpperCase() +
+          data.weather[0].description.slice(1);
+
+        currentWeatherSection.classList.remove("hidden");
+      }
+
+      /**
+       * Renders the 5-day forecast data on the UI.
+       * @param {object} data - Forecast data from the API.
+       */
+      function displayForecast(data) {
+        forecastItemsContainer.innerHTML = ""; // Clear previous forecast items
+
+        // Group forecast data by day to get one entry per day
+        const dailyForecasts = {};
+        data.list.forEach((item) => {
+          const date = new Date(item.dt * 1000);
+          const day = date.toDateString(); // Get string like "Fri Jan 01 2025"
+
+          if (!dailyForecasts[day]) {
+            // Take the first entry for each day as representative (e.g., midday)
+            dailyForecasts[day] = {
+              temp: item.main.temp,
+              icon: item.weather[0].icon,
+              day: formatDay(item.dt),
+            };
+          }
+        });
+
+        // Convert object to array and limit to 5 days
+        const forecastDays = Object.values(dailyForecasts).slice(0, 5);
+
+        forecastDays.forEach((dayData) => {
+          const forecastItem = document.createElement("div");
+          forecastItem.classList.add("forecast-item");
+
+          const daySpan = document.createElement("span");
+          daySpan.textContent = dayData.day;
+
+          const iconImg = document.createElement("img");
+          iconImg.classList.add("icon");
+          iconImg.src = `https://openweathermap.org/img/wn/${dayData.icon}.png`;
+          iconImg.alt = "Forecast icon";
+
+          const tempSpan = document.createElement("span");
+          tempSpan.classList.add("temp");
+          tempSpan.textContent = `${kelvinToCelsius(dayData.temp)}°C`;
+
+          forecastItem.appendChild(daySpan);
+          forecastItem.appendChild(iconImg);
+          forecastItem.appendChild(tempSpan);
+          forecastItemsContainer.appendChild(forecastItem);
+        });
+
+        forecastSection.classList.remove("hidden");
+      }
+
+      // Initial state: Hide weather info and error, show input
+      currentWeatherSection.classList.add("hidden");
+      forecastSection.classList.add("hidden");
+      errorDisplay.classList.add("hidden");
+    </script>
+  </body>
+</html>
